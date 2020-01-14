@@ -10,6 +10,7 @@ const colors = [snow, beach, fields, forest];
 let current = defaultColor;
 let blocked = false;
 let locked = false;
+let care = false;
 let model, webcam, maxPredictions;
 let COLOR = "rgb(60, 60, 60)";
 
@@ -48,7 +49,7 @@ async function predict() {
 function setColor(_c) {
   let amt = 0;
   let temp = [];
-  if (JSON.stringify(current) != JSON.stringify(_c) && !blocked && !locked) {
+  if (JSON.stringify(current) != JSON.stringify(_c) && !blocked && !locked && !care) {
     blocked = true;
     const interval = window.setInterval(() => {
       for (let i = 0; i < 3; i++) {
@@ -67,18 +68,39 @@ function setColor(_c) {
   }
 }
 
+// Set Heart Rate Color
+SOCKET.on("heartrate", (_data) => {
+  let heartrate = _data;
+  // console.log(heartrate);
+  if (beating) {
+    if (heartrate > 550) {
+      setColor([0, 150, 255]);
+      care = true;
+    } else if (heartrate < 100) {
+      setColor([255, 0, 255]);
+      care = true;
+    } else {
+      care = false;
+    }
+  } else {
+    care = false;
+  }
+
+});
+
+// Helper Functions
 function lerp(value1, value2, amount) {
   amount = amount < 0 ? 0 : amount;
   amount = amount > 1 ? 1 : amount;
   return ((1 - amount) * value1 + amount * value2).toFixed(2);
 }
 
-function rgbToHex (_c) { 
+function rgbToHex(_c) {
   let hex = Math.round(_c).toString(16);
   return hex.length == 1 ? "0" + hex : hex;
 };
 
-function fullColorHex(r,g,b) {   
+function fullColorHex(r, g, b) {
   var red = rgbToHex(r);
   var green = rgbToHex(g);
   var blue = rgbToHex(b);

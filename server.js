@@ -30,7 +30,8 @@ board.on("ready", () => {
 
   const poti = new five.Sensor({
     pin: "A0",
-    threshold: 5
+    threshold: 5,
+    freq: 1000
   });
 
   const touch = new five.Sensor({
@@ -45,7 +46,7 @@ board.on("ready", () => {
     touch.on("change", () => socket.emit("touch", touch.boolean));
 
     // Trigger Heart Rate
-    poti.on("change", () => socket.emit("heartrate", poti.value))
+    poti.on("data", () => socket.emit("heartrate", poti.value))
 
     // Trigger Color Change
     socket.on("changeColor", (_color) => {
