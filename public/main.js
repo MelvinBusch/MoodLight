@@ -3,7 +3,7 @@ const URL = "./MoodManager/";
 const timeSteps = 2500;
 const snow = [255, 0, 0];
 const beach = [0, 127, 255];
-const fields = [255, 127, 0];
+const fields = [255, 200, 0];
 const forest = [0, 255, 20];
 const defaultColor = [60, 60, 60];
 const colors = [snow, beach, fields, forest];
@@ -13,6 +13,7 @@ let locked = false;
 let care = false;
 let model, webcam, maxPredictions;
 let COLOR = "rgb(60, 60, 60)";
+let heartrate;
 
 window.addEventListener("load", init);
 
@@ -32,7 +33,7 @@ async function init() {
 async function updatePrediction() {
   webcam.update();
   await predict();
-  window.setTimeout(updatePrediction, timeSteps);
+  // window.setTimeout(updatePrediction, timeSteps);
 }
 
 async function predict() {
@@ -70,14 +71,16 @@ function setColor(_c) {
 
 // Set Heart Rate Color
 SOCKET.on("heartrate", (_data) => {
-  let heartrate = _data;
+  heartrate = _data;
+  let orange = [255, 127, 0];
+  let rot = [255, 0, 0];
   // console.log(heartrate);
   if (beating) {
     if (heartrate > 550) {
-      setColor([0, 150, 255]);
+      setColor(orange);
       care = true;
     } else if (heartrate < 100) {
-      setColor([255, 0, 255]);
+      setColor(rot);
       care = true;
     } else {
       care = false;
@@ -85,7 +88,6 @@ SOCKET.on("heartrate", (_data) => {
   } else {
     care = false;
   }
-
 });
 
 // Helper Functions

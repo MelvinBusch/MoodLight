@@ -8,7 +8,8 @@ body {
   overflow: hidden;
   padding-top: 20px;
   height: 100vh;
-  font-family: "Bungee", cursive;
+  font-family: "Montserrat", sans-serif;
+  font-weight: bolder;
   letter-spacing: 5px;
 }
 
@@ -88,7 +89,7 @@ main #mode input::-webkit-slider-thumb {
 main #mode .labels {
   color: #ef5457;
   font-size: 1em;
-  font-family: "Bungee", cursive;
+  font-family: "Montserrat", sans-serif;
   letter-spacing: 2px;
   line-height: 50px;
   width: 400px;

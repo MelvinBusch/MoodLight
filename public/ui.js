@@ -3,13 +3,15 @@ let ctx;
 let heart = new Image();
 let zoff = 0;
 let beating = false;
+let heartScale = 1;
+
 
 document.addEventListener("DOMContentLoaded", () => {
   // Uhrzeit
   let timeContainer = document.getElementById("time");
   window.setInterval(() => {
     let time = new Date();
-    timeContainer.innerHTML = time.getHours() + ":" + time.getMinutes() + " Uhr";
+    timeContainer.innerHTML = time.getHours() + ":" + (time.getMinutes() < 10 ? "0" : "") + time.getMinutes() + " Uhr";
   }, 5000);
 
   // On-Off Slider
@@ -41,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.requestAnimationFrame(animation);
     ctx.drawImage(heart, -65, -60, 130, 120);
   }
+  engine();
 
   // SOCKET Stuff
   SOCKET.on("touch", _data => beating = _data);
@@ -68,11 +71,34 @@ function animation() {
   if(beating && !locked) {
     ctx.globalAlpha = .6;
   }
-  ctx.drawImage(heart, -65, -60, 130, 120);
   
+  ctx.save();
+  ctx.scale(heartScale, heartScale);
+  ctx.drawImage(heart, -65, -60, 130, 120);
+  ctx.restore();
+
   zoff += 0.01;
   window.requestAnimationFrame(animation);
 }
+
+function heartBeat() {
+  heartScale = 1.1;
+  const fadeOut = window.setInterval(() => {
+    heartScale *= .995;
+    if (heartScale <= 1) {
+      clearInterval(fadeOut);
+    }
+  }, 40);
+}
+
+function engine() {
+  if (beating && heartrate != undefined) {
+    heartBeat();
+  }
+  let delay = map(heartrate, 0, 670, 1500, 800);
+  window.setTimeout(engine, delay);
+}
+
 
 function map(value, low1, high1, low2, high2) {
   return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
