@@ -33,7 +33,7 @@ async function init() {
 async function updatePrediction() {
   webcam.update();
   await predict();
-  // window.setTimeout(updatePrediction, timeSteps);
+  window.setTimeout(updatePrediction, timeSteps);
 }
 
 async function predict() {
